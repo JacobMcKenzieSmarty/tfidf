@@ -6,7 +6,7 @@ import (
 	"tfidf/model"
 )
 
-func BuildQueryTFIDFVector(query string, vocab model.Vocabulary, idf map[model.TokenID]float64) model.TFIDFVector {
+func BuildQueryTFIDFVector(query string, vocab model.Vocabulary, idf model.InverseDocumentFrequencyVector) model.TFIDFVector {
 	tf := model.TermFrequencyVector{}
 	for _, token := range Tokenize(query) {
 		if id, ok := vocab[token]; ok {
@@ -21,7 +21,7 @@ func ScoreDocuments(queryVec model.TFIDFVector, docVecs []model.TFIDFVector) []m
 
 	for i, docVec := range docVecs {
 		var score float64
-		for id, qval := range queryVec {
+		for id, qval := range queryVec { //here is the dot product calculation for the candidates, which is the cos(𝜃)
 			if dval, ok := docVec[id]; ok {
 				score += qval * dval
 			}
