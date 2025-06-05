@@ -43,4 +43,5 @@ func calculateCosineSimilarity(queryVec, docVec model.TFIDFVector) float64 {
 			score += qVal * dVal
 		}
 	}
+	return score
 }
