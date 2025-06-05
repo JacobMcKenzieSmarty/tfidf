@@ -30,7 +30,7 @@ tfidf/
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/yourusername/tfidf.git
+git clone https://github.com/JacobMcKenzieSmarty/tfidf.git
 cd tfidf
 ```
 
