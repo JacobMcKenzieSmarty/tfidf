@@ -26,7 +26,7 @@ func main() {
 
 	// Step 3: Query vector
 	query := "3845 W"
-	queryVec := pipeline.BuildQueryVector(query, vocab, idf)
+	queryVec := pipeline.BuildQueryTFIDFVector(query, vocab, idf)
 
 	// Step 4: Score
 	scores := pipeline.ScoreDocuments(queryVec, docVecs)

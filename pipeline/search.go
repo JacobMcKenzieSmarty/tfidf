@@ -6,8 +6,8 @@ import (
 	"tfidf/model"
 )
 
-func BuildQueryVector(query string, vocab map[string]int, idf map[int]float64) model.Vector {
-	tf := model.Vector{}
+func BuildQueryTFIDFVector(query string, vocab model.Vocabulary, idf map[model.TokenID]float64) model.TFIDFVector {
+	tf := model.TermFrequencyVector{}
 	for _, token := range Tokenize(query) {
 		if id, ok := vocab[token]; ok {
 			tf[id]++
@@ -16,8 +16,8 @@ func BuildQueryVector(query string, vocab map[string]int, idf map[int]float64) m
 	return ComputeNormalizedTFIDF(tf, idf)
 }
 
-func ScoreDocuments(queryVec model.Vector, docVecs []model.Vector) []model.Score {
-	scores := []model.Score{}
+func ScoreDocuments(queryVec model.TFIDFVector, docVecs []model.TFIDFVector) []model.Score {
+	var scores []model.Score
 
 	for i, docVec := range docVecs {
 		var score float64

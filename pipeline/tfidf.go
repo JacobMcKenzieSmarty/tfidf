@@ -6,19 +6,19 @@ import (
 	"tfidf/model"
 )
 
-func BuildVocabAndTF(docs []model.Document) (map[string]int, []model.Vector, map[int]int) {
-	vocab := map[string]int{}
-	df := map[int]int{}
-	docTFs := make([]model.Vector, len(docs))
+func BuildVocabAndTF(docs []model.Document) (model.Vocabulary, []model.TermFrequencyVector, model.DocumentFrequency) {
+	vocab := map[string]model.TokenID{}
+	df := map[model.TokenID]int{}
+	docTFs := make([]model.TermFrequencyVector, len(docs))
 	vocabIndex := 0
 
 	for i, doc := range docs {
-		tf := model.Vector{}
-		seen := map[int]bool{}
+		tf := model.TermFrequencyVector{}
+		seen := map[model.TokenID]bool{}
 		for _, token := range Tokenize(doc.Text) {
 			id, ok := vocab[token]
 			if !ok {
-				id = vocabIndex
+				id = model.TokenID(vocabIndex)
 				vocab[token] = id
 				vocabIndex++
 			}
@@ -33,16 +33,16 @@ func BuildVocabAndTF(docs []model.Document) (map[string]int, []model.Vector, map
 	return vocab, docTFs, df
 }
 
-func ComputeIDF(df map[int]int, totalDocs int) map[int]float64 {
-	idf := map[int]float64{}
+func ComputeIDF(df model.DocumentFrequency, totalDocs int) model.InverseDocumentFrequencyVector {
+	idf := map[model.TokenID]float64{}
 	for termID, docCount := range df {
 		idf[termID] = 1 + math.Log(float64(totalDocs)/float64(1+docCount))
 	}
 	return idf
 }
 
-func ComputeNormalizedTFIDF(tf map[int]float64, idf map[int]float64) model.Vector {
-	vec := model.Vector{}
+func ComputeNormalizedTFIDF(tf model.TermFrequencyVector, idf model.InverseDocumentFrequencyVector) model.TFIDFVector {
+	vec := model.TFIDFVector{}
 	var norm float64
 	for termID, freq := range tf {
 		tfWeight := 1 + math.Log(freq)
@@ -59,8 +59,8 @@ func ComputeNormalizedTFIDF(tf map[int]float64, idf map[int]float64) model.Vecto
 	return vec
 }
 
-func BuildTFIDFVectors(tfList []model.Vector, idf map[int]float64) []model.Vector {
-	vectors := make([]model.Vector, len(tfList))
+func BuildTFIDFVectors(tfList []model.TermFrequencyVector, idf model.InverseDocumentFrequencyVector) []model.TFIDFVector {
+	vectors := make([]model.TFIDFVector, len(tfList))
 	for i, tf := range tfList {
 		vectors[i] = ComputeNormalizedTFIDF(tf, idf)
 	}
