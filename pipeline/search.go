@@ -26,14 +26,7 @@ func ScoreDocuments(queryVec model.TFIDFVector, docVecs []model.TFIDFVector, can
 	var scores []model.Score
 
 	for docID := range candidates {
-		docVec := docVecs[docID]
-		var score float64                // 0 ≤ score ≤ 1   where 0 means totally dissimilar and 1 meaning perfectly similar
-		for id, qVal := range queryVec { //here is the dot product calculation for the candidates, which is the cos(𝜃)
-			if dVal, ok := docVec[id]; ok {
-				score += qVal * dVal
-			}
-		}
-		scores = append(scores, model.Score{DocID: docID, Value: score})
+		scores = append(scores, model.Score{DocID: docID, Value: calculateCosineSimilarity(queryVec, docVecs[docID])})
 	}
 
 	sort.Slice(scores, func(i, j int) bool {
@@ -41,4 +34,13 @@ func ScoreDocuments(queryVec model.TFIDFVector, docVecs []model.TFIDFVector, can
 	})
 
 	return scores
+}
+
+func calculateCosineSimilarity(queryVec, docVec model.TFIDFVector) float64 {
+	var score float64                // 0 ≤ score ≤ 1   where 0 means totally dissimilar and 1 meaning perfectly similar
+	for id, qVal := range queryVec { //here is the dot product calculation for the candidates, which is the cos(𝜃)
+		if dVal, ok := docVec[id]; ok {
+			score += qVal * dVal
+		}
+	}
 }
