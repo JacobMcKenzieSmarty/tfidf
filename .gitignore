@@ -1,0 +1,14 @@
+# Ignore Go binaries
+*.exe
+*.out
+*.test
+
+# Ignore build directories
+/bin/
+/obj/
+
+/vendor/
+
+# IDEs
+.vscode/
+.idea/
