@@ -6,11 +6,12 @@ type Document struct {
 }
 
 type TokenID int
+type DocID int
 
 type TFIDFVector map[TokenID]float64
 
 type Score struct {
-	DocID int
+	DocID DocID
 	Value float64
 }
 

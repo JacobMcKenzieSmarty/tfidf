@@ -6,27 +6,34 @@ import (
 	"tfidf/model"
 )
 
-func BuildQueryTFIDFVector(query string, vocab model.Vocabulary, idf model.InverseDocumentFrequencyVector) model.TFIDFVector {
+func BuildQueryTFIDFVector(query string, vocab model.Vocabulary, idf model.InverseDocumentFrequencyVector, index InvertedIndex) (model.TFIDFVector, map[model.DocID]struct{}) {
 	tf := model.TermFrequencyVector{}
+	candidates := make(map[model.DocID]struct{})
+
 	for _, token := range Tokenize(query) {
 		if id, ok := vocab[token]; ok {
 			tf[id]++
-		}
-	}
-	return ComputeNormalizedTFIDF(tf, idf)
-}
 
-func ScoreDocuments(queryVec model.TFIDFVector, docVecs []model.TFIDFVector) []model.Score {
-	var scores []model.Score
-
-	for i, docVec := range docVecs {
-		var score float64
-		for id, qval := range queryVec { //here is the dot product calculation for the candidates, which is the cos(𝜃)
-			if dval, ok := docVec[id]; ok {
-				score += qval * dval
+			for docID := range index[id] {
+				candidates[docID] = struct{}{}
 			}
 		}
-		scores = append(scores, model.Score{DocID: i, Value: score})
+	}
+	return ComputeNormalizedTFIDF(tf, idf), candidates
+}
+
+func ScoreDocuments(queryVec model.TFIDFVector, docVecs []model.TFIDFVector, candidates map[model.DocID]struct{}) []model.Score {
+	var scores []model.Score
+
+	for docID := range candidates {
+		docVec := docVecs[docID]
+		var score float64                // 0 ≤ score ≤ 1   where 0 means totally dissimilar and 1 meaning perfectly similar
+		for id, qVal := range queryVec { //here is the dot product calculation for the candidates, which is the cos(𝜃)
+			if dVal, ok := docVec[id]; ok {
+				score += qVal * dVal
+			}
+		}
+		scores = append(scores, model.Score{DocID: docID, Value: score})
 	}
 
 	sort.Slice(scores, func(i, j int) bool {

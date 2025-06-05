@@ -23,13 +23,14 @@ func main() {
 
 	// Step 2: Document vectors
 	docVecs := pipeline.BuildTFIDFVectors(docTFs, idf)
+	invertedIndex := pipeline.MakeInvertedIndex(docTFs)
 
 	// Step 3: Query vector
-	query := "3845 W"
-	queryVec := pipeline.BuildQueryTFIDFVector(query, vocab, idf)
+	query := "3845 S"
+	queryVec, candidates := pipeline.BuildQueryTFIDFVector(query, vocab, idf, invertedIndex)
 
 	// Step 4: Score
-	scores := pipeline.ScoreDocuments(queryVec, docVecs)
+	scores := pipeline.ScoreDocuments(queryVec, docVecs, candidates)
 
 	// Step 5: Print
 	for i, score := range scores {
