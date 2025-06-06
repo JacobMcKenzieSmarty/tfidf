@@ -24,7 +24,7 @@ func main() {
 	}
 
 	//Step 1: Preprocessing Data
-	vocab, docTFs, df := pipeline.BuildVocabAndTF(docs)
+	vocab, docTFs, df := pipeline.BuildVocabAndTermFrequenciesAndDocumentFrequency(docs)
 	idf := pipeline.ComputeIDF(df, len(docs))
 	docVecs := pipeline.BuildTFIDFVectors(docTFs, idf)
 

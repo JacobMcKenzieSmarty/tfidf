@@ -28,6 +28,7 @@ tfidf/
 ├── main.go             // Entry point
 ├── model/              // Shared types (Document, Vector, Score)
 ├── pipeline/           // Tokenizer, TF-IDF logic, search engine
+├── data/               // Used to extract documents from an example corpus
 ```
 
 ---
