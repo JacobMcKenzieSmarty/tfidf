@@ -1,8 +1,9 @@
 package model
 
 type Document struct {
-	ID   int
-	Text string
+	ID       int
+	Text     string
+	Category string
 }
 
 type TokenID int
