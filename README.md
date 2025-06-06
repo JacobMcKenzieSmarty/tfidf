@@ -4,6 +4,13 @@ A simple and fast TF-IDF-based text search engine written in Go. It supports tok
 
 ---
 
+## 🛝 Based off the Presentation
+
+- https://docs.google.com/presentation/d/1ZmHTDNNzgtjNR6vbSmzhrVjvs5qJ-yWKpv9TrPyPbcE/edit?usp=sharing
+
+
+---
+
 ## 🚀 Features
 
 - Tokenizes and indexes a set of short documents
